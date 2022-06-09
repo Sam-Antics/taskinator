@@ -223,54 +223,24 @@ var saveTasks = function() {
 
 var loadTasks = function() {
   // get task items from local storage
-  tasks = localStorage.getItem("tasks");
+  var savedTasks = localStorage.getItem("tasks");
 
-  if (!tasks) {
-      tasks = [];
+  if (!savedTasks) {
       return false;
   }
 
   // convert tasks from the string format back into an array
-  tasks = JSON.parse(tasks);
-  // iterate through a tasks array and create task elements on the page from it
-  for (var i = 0; i < tasks.length; i++) {
-    
-    // assign the taskIdCounter value to tasks[i].id in order to increment later
-    tasks[i].id = taskIdCounter;
+  savedTasks = JSON.parse(savedTasks);
+  console.log(savedTasks);
 
-    // recreating the elements from the retrieved JSON data (as in createTaskEl)
-    listItemEl = document.createElement("li");
-    listItemEl.className = "task-item";
-    listItemEl.setAttribute("data-task-id", tasks[i].id);
-    
-    taskInfoEl = document.createElement("div");
-    taskInfoEl.className = "task-info";
-    taskInfoEl.innerHTML = "<h3 class='task-name'>" + tasks[i].name + "</h3><span class='task-type'>" + tasks[i].type + "</span>";
-    listItemEl.appendChild(taskInfoEl);
-
-    taskActionsEl = createTaskActions(tasks[i].id);
-    listItemEl.appendChild(taskActionsEl);
-
-    // if loop to set the statuses and append them to their respective ul elements
-    if (tasks[i].status === "to do") {
-      listItemEl.querySelector("select[name='status-change']").selectedIndex = 0;
-      tasksToDoEl.appendChild(listItemEl);
-    }
-    else if (tasks[i].status === "in progress") {
-      listItemEl.querySelector("select[name='status-change']").selectedIndex = 1;
-      tasksInProgressEl.appendChild(listItemEl);
-    } 
-    else if (tasks[i].status === "completed") {
-      listItemEl.querySelector("select[name='status-change']").selectedIndex = 2;
-      tasksCompletedEl.appendChild(listItemEl);
-    }
-
-    // iterate taskIdCounter before going through the loop again so the ids increment
-    taskIdCounter++;
+  // loop through savedTasks array
+  for (var i = 0; i < savedTasks.length; i++) {
+    // pass each task object into the 'createdTaskEl()' function
+    createTaskEl(savedTasks[i]);
   }
-}
+  // this is great and all, but it puts all the tasks back into the "To Do" list
+};
 
-loadTasks();
 
 // creates a new task
 formEl.addEventListener("submit", taskFormHandler);
@@ -278,3 +248,5 @@ formEl.addEventListener("submit", taskFormHandler);
 pageContentEl.addEventListener("click", taskButtonHandler);
 // for changing the status
 pageContentEl.addEventListener("change", taskStatusChangeHandler);
+
+loadTasks();
